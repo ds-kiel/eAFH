@@ -1,0 +1,4 @@
+tests:
+  filesystem.fat.dual_drive:
+    platform_allow: qemu_x86 native_posix
+    tags: filesystem

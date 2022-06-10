@@ -1,0 +1,6 @@
+common:
+  depends_on: netif
+  tags: net socket udp
+tests:
+  net.socket.udp:
+    min_ram: 21

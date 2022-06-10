@@ -1,0 +1,42 @@
+# Copyright (c) 2018-2019 Linaro Limited
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_MPS2_AN521
+
+config BOARD
+	default "mps2_an521_nonsecure" if TRUSTED_EXECUTION_NONSECURE
+	default "mps2_an521"
+
+if GPIO
+
+config GPIO_CMSDK_AHB
+	default y
+
+endif # GPIO
+
+if SERIAL
+
+config UART_CMSDK_APB
+	default y
+
+config UART_INTERRUPT_DRIVEN
+	default y
+
+endif # SERIAL
+
+config WDOG_CMSDK_APB
+	default y
+	depends on WATCHDOG
+
+config I2C_SBCON
+	default y
+	depends on I2C
+
+if IPM
+
+config IPM_MHU
+	default y
+
+endif # IPM
+
+endif

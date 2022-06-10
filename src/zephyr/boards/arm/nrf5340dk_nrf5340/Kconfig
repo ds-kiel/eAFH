@@ -1,0 +1,70 @@
+# nRF5340 (P)DK board configuration
+
+# Copyright (c) 2019 - 2020 Nordic Semiconductor ASA
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_NRF5340PDK_NRF5340_CPUAPP || BOARD_NRF5340PDK_NRF5340_CPUAPPNS || BOARD_NRF5340DK_NRF5340_CPUAPP || BOARD_NRF5340DK_NRF5340_CPUAPPNS
+
+config BOARD_ENABLE_DCDC_APP
+	bool "Enable Application MCU DCDC converter"
+	select SOC_DCDC_NRF53X_APP
+	default y
+
+config BOARD_ENABLE_DCDC_NET
+	bool "Enable Network MCU DCDC converter"
+	select SOC_DCDC_NRF53X_NET
+	default y
+
+config BOARD_ENABLE_DCDC_HV
+	bool "Enable High Voltage DCDC converter"
+	select SOC_DCDC_NRF53X_HV
+	default y
+
+choice BT_HCI_BUS_TYPE
+	default BT_RPMSG if BT
+endchoice
+
+config HEAP_MEM_POOL_SIZE
+	default 4096 if BT_RPMSG
+
+config BT_HAS_HCI_VS
+	default y if BT
+
+config BOARD_ENABLE_CPUNET
+	bool "Enable nRF53 Network MCU"
+	help
+	  This option enables releasing the Network 'force off' signal, which
+	  as a consequence will power up the Network MCU during system boot.
+	  Additionally, the option allocates GPIO pins that will be used by UARTE
+	  of the Network MCU.
+	  Note: GPIO pin allocation can only be configured by the secure Application
+	  MCU firmware, so when this option is used with the non-secure version of
+	  the board, the application needs to take into consideration, that the
+	  secure firmware image must already have configured GPIO allocation for the
+	  Network MCU.
+	default y if (BT || NET_L2_IEEE802154)
+
+config DOMAIN_CPUNET_BOARD
+	string
+	default "nrf5340pdk_nrf5340_cpunet" if BOARD_NRF5340PDK_NRF5340_CPUAPP || BOARD_NRF5340PDK_NRF5340_CPUAPPNS
+	default "nrf5340dk_nrf5340_cpunet" if BOARD_NRF5340DK_NRF5340_CPUAPP || BOARD_NRF5340DK_NRF5340_CPUAPPNS
+	depends on BOARD_ENABLE_CPUNET
+	help
+	  The board which will be used for CPUNET domain when creating a multi
+	  image application where one or more images should be located on
+	  another board. For example hci_rpmsg on the nRF5340_cpunet for
+	  Bluetooth applications.
+
+endif # BOARD_NRF5340PDK_NRF5340_CPUAPP || BOARD_NRF5340PDK_NRF5340_CPUAPPNS || BOARD_NRF5340DK_NRF5340_CPUAPP || BOARD_NRF5340DK_NRF5340_CPUAPPNS
+
+if BOARD_NRF5340PDK_NRF5340_CPUNET || BOARD_NRF5340DK_NRF5340_CPUNET
+
+# BT_CTLR depends on BT. When BT is enabled we should default to also
+# enabling the controller.
+config BT_CTLR
+	default y if BT
+
+config BT_ECC
+	default y if BT
+
+endif # BOARD_NRF5340PDK_NRF5340_CPUNET || BOARD_NRF5340DK_NRF5340_CPUNET

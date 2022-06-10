@@ -1,0 +1,15 @@
+# Copyright (c) 2018, Cypress
+# SPDX-License-Identifier: Apache-2.0
+
+description: Cypress UART
+
+compatible: "cypress,psoc6-uart"
+
+include: uart-controller.yaml
+
+properties:
+    reg:
+      required: true
+
+    interrupts:
+      required: true

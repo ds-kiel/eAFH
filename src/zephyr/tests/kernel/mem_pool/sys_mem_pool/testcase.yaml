@@ -1,0 +1,3 @@
+tests:
+  kernel.memory_pool.sys:
+    tags: kernel userspace mem_pool

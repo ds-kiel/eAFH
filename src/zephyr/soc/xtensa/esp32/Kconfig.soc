@@ -1,0 +1,8 @@
+# Copyright (c) 2017 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+config SOC_ESP32
+	bool "ESP32"
+	select XTENSA
+	select CLOCK_CONTROL
+	select CLOCK_CONTROL_ESP32

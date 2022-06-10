@@ -1,0 +1,16 @@
+description: STM32 RCC (Reset and Clock Controller)
+
+compatible: "st,stm32-rcc"
+
+include: [clock-controller.yaml, base.yaml]
+
+properties:
+    reg:
+      required: true
+
+    "#clock-cells":
+      const: 2
+
+clock-cells:
+  - bus
+  - bits

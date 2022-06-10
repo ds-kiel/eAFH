@@ -1,0 +1,10 @@
+sample:
+  description: Shell commands for inspecting flash driver
+    behavior
+  name: Flash shell
+tests:
+  sample.drivers.flash.shell:
+    tags: flash shell
+    filter: CONFIG_FLASH_HAS_DRIVER_ENABLED
+    harness: keyboard
+    min_ram: 12

@@ -1,0 +1,60 @@
+description: nRF PWM
+
+compatible: "nordic,nrf-pwm"
+
+include: [pwm-controller.yaml, base.yaml]
+
+properties:
+    reg:
+      required: true
+
+    center-aligned:
+      type: boolean
+      description: Use center-aligned (up and down) counter mode
+      required: false
+
+    ch0-pin:
+      type: int
+      description: Channel 0 pin
+      required: false
+
+    ch0-inverted:
+      type: boolean
+      description: Channel 0 inverted
+      required: false
+
+    ch1-pin:
+      type: int
+      description: Channel 1 pin
+      required: false
+
+    ch1-inverted:
+      type: boolean
+      description: Channel 1 inverted
+      required: false
+
+    ch2-pin:
+      type: int
+      description: Channel 2 pin
+      required: false
+
+    ch2-inverted:
+      type: boolean
+      description: Channel 2 inverted
+      required: false
+
+    ch3-pin:
+      type: int
+      description: Channel 3 pin
+      required: false
+
+    ch3-inverted:
+      type: boolean
+      description: Channel 3 inverted
+      required: false
+
+    "#pwm-cells":
+      const: 1
+
+pwm-cells:
+  - channel

@@ -1,0 +1,44 @@
+# TWR-KE18F board
+
+# Copyright (c) 2019 Vestas Wind Systems A/S
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_TWR_KE18F
+
+config BOARD
+	default "twr_ke18f"
+
+if SPI_MCUX_LPSPI
+
+config SPI_0
+	default y
+
+config SPI_1
+	default y
+
+endif # SPI_MCUX_LPSPI
+
+if PINMUX_MCUX
+
+config PINMUX_MCUX_PORTA
+	default y
+
+config PINMUX_MCUX_PORTB
+	default y
+
+config PINMUX_MCUX_PORTC
+	default y
+
+config PINMUX_MCUX_PORTD
+	default y
+
+config PINMUX_MCUX_PORTE
+	default y
+
+endif # PINMUX_MCUX
+
+config TEMP_KINETIS
+	default y if "$(dt_nodelabel_enabled,adc0)"
+	depends on SENSOR && ADC
+
+endif # BOARD_TWR_KE18F

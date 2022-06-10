@@ -1,0 +1,66 @@
+# Hexiwear K64 board
+
+# Copyright (c) 2016, Freescale Semiconductor, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_HEXIWEAR_K64
+
+config BOARD
+	default "hexiwear_k64"
+
+config OSC_XTAL0_FREQ
+	default 12000000
+
+config MCG_PRDIV0
+	default 0x02
+
+config MCG_VDIV0
+	default 0x06
+
+config MCG_FCRDIV
+	default 1
+
+if PINMUX_MCUX
+
+config PINMUX_MCUX_PORTA
+	default y if MAX30101
+
+config PINMUX_MCUX_PORTB
+	default y if "$(dt_nodelabel_enabled,uart0)" && SERIAL
+
+config PINMUX_MCUX_PORTC
+	default y
+
+config PINMUX_MCUX_PORTD
+	default y
+
+config PINMUX_MCUX_PORTE
+	default y if "$(dt_nodelabel_enabled,uart4)" && SERIAL
+
+endif # PINMUX_MCUX
+
+if ADC
+
+config BATTERY_SENSE
+	default y
+
+endif # ADC
+
+if SPI
+
+config SPI_0
+	default y
+
+config SPI_1
+	default n
+
+config SPI_2
+	default n
+
+endif # SPI
+
+config ETH_MCUX_0
+	default y
+	depends on NET_L2_ETHERNET
+
+endif # BOARD_HEXIWEAR_K64

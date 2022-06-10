@@ -1,0 +1,26 @@
+/*
+ * Copyright (c) 2018 Endre Karlson <endre.karlson@gmail.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/l0/stm32l072Xz.dtsi>
+
+/ {
+	model = "Dragino LSN50 LoRA Sensor Node";
+	compatible = "vendor,dragino", "st,stm32l072";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+	};
+};
+
+&usart1 {
+	current-speed = <115200>;
+	status = "okay";
+};
+

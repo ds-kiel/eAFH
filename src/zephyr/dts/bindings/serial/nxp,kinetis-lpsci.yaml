@@ -1,0 +1,12 @@
+description: Kinetis LPSCI UART
+
+compatible: "nxp,kinetis-lpsci"
+
+include: uart-controller.yaml
+
+properties:
+    reg:
+      required: true
+
+    interrupts:
+      required: true

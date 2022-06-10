@@ -1,0 +1,238 @@
+# OpenThread driver configuration options
+
+# Copyright (c) 2018 Nordic Semiconductor ASA
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig NET_L2_OPENTHREAD
+	bool "OpenThread L2"
+	depends on NETWORKING
+
+	select SETTINGS
+	select FLASH
+	select FLASH_PAGE_LAYOUT
+	select FLASH_MAP
+	select MPU_ALLOW_FLASH_WRITE
+	select NVS
+
+	select CPLUSPLUS
+	select REBOOT
+	select ENTROPY_GENERATOR
+
+	imply NET_UDP
+	imply NET_IPV6
+	imply NET_CONFIG_NEED_IPV6
+
+if NET_L2_OPENTHREAD
+
+choice OPENTHREAD_IMPLEMENTATION
+	prompt "OpenThread origin selection"
+	help
+	  Select OpenThread to use for build. Custom OpenThread implementations
+	  can be added to the application Kconfig.
+
+config OPENTHREAD_SOURCES
+	bool "OpenThread from sources"
+	help
+	  Build Zephyr's OpenThread port from sources.
+
+endchoice
+
+config OPENTHREAD_MANUAL_START
+	bool "Start OpenThread stack manually"
+	help
+	  If enabled, OpenThread stack will have to be configured and
+	  started manually, with respective API calls or CLI/NCP commands.
+	  Otherwise, OpenThread will configure the network parametrs and try to
+	  join the Thread network automatically during initialization (using
+	  credentials stored in persistend storage, obtained during
+	  commissioning or pre-commissioned with other Kconfig options,
+	  depending on configuration used).
+
+menu "OpenThread stack features"
+source "subsys/net/l2/openthread/Kconfig.features"
+endmenu
+
+menu "Thread Network configuration"
+source "subsys/net/l2/openthread/Kconfig.thread"
+endmenu
+
+menu "Logging"
+
+menuconfig OPENTHREAD_DEBUG
+	bool "OpenThread stack logging support"
+	depends on NET_L2_OPENTHREAD
+	help
+	  This option enables logging support for OpenThread.
+
+choice
+	prompt "OpenThread stack log level"
+	depends on OPENTHREAD_DEBUG
+	help
+	  This option selects log level for OpenThread stack.
+
+config OPENTHREAD_LOG_LEVEL_CRIT
+	bool "Critical"
+config OPENTHREAD_LOG_LEVEL_WARN
+	bool "Warning"
+config OPENTHREAD_LOG_LEVEL_NOTE
+	bool "Notice"
+config OPENTHREAD_LOG_LEVEL_INFO
+	bool "Informational"
+config OPENTHREAD_LOG_LEVEL_DEBG
+	bool "Debug"
+endchoice
+
+config OPENTHREAD_LOG_LEVEL
+	int
+	default 1 if OPENTHREAD_LOG_LEVEL_CRIT
+	default 2 if OPENTHREAD_LOG_LEVEL_WARN
+	default 3 if OPENTHREAD_LOG_LEVEL_NOTE
+	default 4 if OPENTHREAD_LOG_LEVEL_INFO
+	default 5 if OPENTHREAD_LOG_LEVEL_DEBG
+	default 0
+
+menuconfig OPENTHREAD_L2_DEBUG
+	bool "OpenThread L2 log support"
+	help
+	  This option enables log support for OpenThread.
+
+if OPENTHREAD_L2_DEBUG
+
+config OPENTHREAD_L2_DEBUG_DUMP_15_4
+	bool "Dump 802.15.4 packets"
+	help
+	  This option enables dumping of 802.15.4 packets.
+
+config OPENTHREAD_L2_DEBUG_DUMP_IPV6
+	bool "Dump IPv6 packets"
+	help
+	  This option enables dumping of IPv6 packets.
+
+endif # OPENTHREAD_L2_DEBUG
+
+module = OPENTHREAD_L2
+module-dep = NET_LOG
+module-str = Log level for OpenThread driver
+module-help = Enables OpenThread driver to output debug messages.
+source "subsys/net/Kconfig.template.log_config.net"
+
+endmenu # "Logging"
+
+menu "Zephyr optimizations"
+
+config OPENTHREAD_THREAD_PREEMPTIVE
+	bool "Set Openthread thread to be preemptive"
+
+config OPENTHREAD_THREAD_PRIORITY
+	int "OpenThread thread priority"
+	default 0 if OPENTHREAD_THREAD_PREEMPTIVE
+	default 8
+
+config OPENTHREAD_THREAD_STACK_SIZE
+	int "OpenThread thread stack size"
+	default 6144 if OPENTHREAD_COMMISSIONER
+	default 3072
+
+config OPENTHREAD_PKT_LIST_SIZE
+	int "List size for IPv6 packet buffering"
+	default 10
+
+config OT_PLAT_FLASH_PAGES_COUNT
+	int "Flash pages count used by OpenThread platform"
+	default 4
+	help
+	  This option sets flash pages count used by OpenThread to store its settings. They are located at the end of flash.
+
+endmenu # "Zephyr optimizations"
+
+config OPENTHREAD_SHELL
+	bool "Enable OpenThread shell"
+	select SHELL
+	default y
+
+config OPENTHREAD_MBEDTLS
+	bool "Enable built-in mbedtls for use with OpenThread"
+	default y
+	select MBEDTLS
+	select MBEDTLS_ENABLE_HEAP
+	select MBEDTLS_CIPHER_AES_ENABLED
+	select MBEDTLS_CIPHER_CCM_ENABLED
+	select MBEDTLS_MAC_SHA256_ENABLED
+	select MBEDTLS_ENTROPY_ENABLED
+	select MBEDTLS_MAC_CMAC_ENABLED
+	select MBEDTLS_CIPHER
+	select MBEDTLS_MD
+	select MBEDTLS_TLS_VERSION_1_2 if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_DTLS if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_ECP_DP_SECP256R1_ENABLED if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_ECP_NIST_OPTIM if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_SSL_EXPORT_KEYS if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_CTR_DRBG_ENABLED if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_HMAC_DRBG_ENABLED if OPENTHREAD_COMMISSIONER || OPENTHREAD_JOINER
+	select MBEDTLS_KEY_EXCHANGE_ECDHE_ECDSA_ENABLED if OPENTHREAD_ECDSA
+
+config OPENTHREAD_MBEDTLS_LIB_NAME
+	string "mbedtls lib name"
+	default "mbedTLS"
+	help
+	  This option allows to specify one or more mbedtls library files to be
+	  linked with OpenThread. Separate multiple values with space " ".
+
+menuconfig OPENTHREAD_NCP
+	bool "Network Co-Processor"
+	select OPENTHREAD_MANUAL_START
+	select RING_BUFFER
+	select UART_INTERRUPT_DRIVEN
+	help
+	  Enable NCP in OpenThread stack.
+
+if OPENTHREAD_NCP
+
+config OPENTHREAD_NCP_RADIO
+	bool "Network Co-Processor as Radio"
+	help
+	  Enable NCP in OpenThread stack as radio-only.
+
+config OPENTHREAD_NCP_SPINEL_ON_UART_DEV_NAME
+	string "UART device to use for NCP SPINEL"
+	default "UART_0"
+	help
+	  UART device to use for NCP SPINEL.
+
+config OPENTHREAD_NCP_UART_RING_BUFFER_SIZE
+	int "Set NCP UART ring buffer size"
+	default 4096
+	help
+	  TX buffer size for the OpenThread NCP UART.
+
+config OPENTHREAD_NCP_SPINEL_ON_UART_ACM
+	bool "Run SPINEL over USB-ACM"
+	depends on USB_CDC_ACM
+	help
+	  Is the SPINEL device a USB-CDC-ACM device.
+
+config OPENTHREAD_NCP_VENDOR_HOOK_SOURCE
+	string "Path to NCP vendor hook source file"
+	help
+	  Provides path to compile ncp vendor hook file inside NCP component.
+
+endif # OPENTHREAD_NCP
+
+config OPENTHREAD_PLATFORM_INFO
+	string "Platform information for OpenThread"
+	default "ZEPHYR"
+	help
+	  Platform information for OpenThread
+
+config OPENTHREAD_CUSTOM_PARAMETERS
+	string "Custom Parameters to pass to OpenThread build system"
+	default ""
+	help
+	  This option is intended for advanced users only.
+	  Pass additional parameters that do not have corresponding Kconfig
+	  options to the OpenThread build system. Separate multiple values with
+	  space " ", for example:
+	  "OPENTHREAD_CONFIG_JOINER_ENABLE=1 OPENTHREAD_CONFIG_JOINER_MAX_CANDIDATES=3"
+
+endif # NET_L2_OPENTHREAD

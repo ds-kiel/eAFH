@@ -1,0 +1,32 @@
+description: Nordic UART
+
+compatible: "nordic,nrf-uart"
+
+include: uart-controller.yaml
+
+properties:
+    reg:
+      required: true
+
+    interrupts:
+      required: true
+
+    tx-pin:
+      type: int
+      description: TX pin
+      required: true
+
+    rx-pin:
+      type: int
+      description: RX pin
+      required: false
+
+    rts-pin:
+      type: int
+      description: RTS pin
+      required: false
+
+    cts-pin:
+      type: int
+      description: CTS pin
+      required: false

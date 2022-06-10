@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2018, Reto Schneider <code@reto-schneider.ch>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/f4/stm32f407Xg.dtsi>
+
+/ {
+	model = "Olimex STM32-H407 board";
+	compatible = "olimex,stm32-h407", "st,stm32f407";
+
+	chosen {
+		zephyr,console = &usart2;
+		zephyr,shell-uart = &usart2;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,ccm = &ccm0;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		green_led_2: led_2 {
+			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
+			label = "User LD2";
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		user_button: button {
+			label = "User";
+			gpios = <&gpioc 13 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	aliases {
+		led0 = &green_led_2;
+		sw0 = &user_button;
+	};
+};
+
+&usart2 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&usart3 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&usart6 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&rtc {
+	status = "okay";
+};
+
+&rng {
+	status = "okay";
+};

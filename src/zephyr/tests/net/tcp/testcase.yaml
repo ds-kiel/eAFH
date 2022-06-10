@@ -1,0 +1,5 @@
+tests:
+  net.tcp.simple:
+    depends_on: netif
+    tags: net tcp
+    filter: CONFIG_NET_TCP1

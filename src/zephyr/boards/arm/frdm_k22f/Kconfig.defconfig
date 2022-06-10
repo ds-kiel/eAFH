@@ -1,0 +1,46 @@
+# FRDM-K22F board
+
+# Copyright (c) 2018 Prevas A/S
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_FRDM_K22F
+
+config BOARD
+	default "frdm_k22f"
+
+config OSC_XTAL0_FREQ
+	default 8000000
+
+config MCG_PRDIV0
+	default 0x3
+
+config MCG_VDIV0
+	default 0xc
+
+config MCG_FCRDIV
+	default 0
+
+if PINMUX_MCUX
+
+config PINMUX_MCUX_PORTA
+	default y
+
+config PINMUX_MCUX_PORTB
+	default y
+
+config PINMUX_MCUX_PORTC
+	default y
+
+config PINMUX_MCUX_PORTD
+	default y
+
+config PINMUX_MCUX_PORTE
+	default y if "$(dt_nodelabel_enabled,uart1)" && SERIAL
+
+endif # PINMUX_MCUX
+
+config SPI_0
+	default y
+	depends on SPI
+
+endif # BOARD_FRDM_K22F

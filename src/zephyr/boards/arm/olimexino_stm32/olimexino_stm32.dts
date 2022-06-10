@@ -1,0 +1,117 @@
+/*
+ * Copyright (c) 2017 I-SENSE group of ICCS
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/f1/stm32f103Xb.dtsi>
+
+/ {
+	model = "Olimex OLIMEXINO-STM32 board";
+	compatible = "olimex,olimexino_stm32", "st,stm32f103rb";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,can-primary = &can1;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		green_led_1: led_1 {
+			gpios = <&gpioa 5 GPIO_ACTIVE_HIGH>;
+			label = "LED1";
+		};
+		yellow_led_2: led_2 {
+			gpios = <&gpioa 1 GPIO_ACTIVE_HIGH>;
+			label = "LED2";
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		user_button: button {
+			label = "Key";
+			gpios = <&gpioc 9 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	aliases {
+		led0 = &green_led_1;
+		led1 = &yellow_led_2;
+		sw0 = &user_button;
+	};
+};
+
+uext_i2c: &i2c2 {};
+uext_spi: &spi1 {};
+uext_serial: &usart1 {};
+
+&usart1 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&usart2 {
+	current-speed = <115200>;
+};
+
+&usart3 {
+	current-speed = <115200>;
+};
+
+&i2c1 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&i2c2 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&spi1 {
+	status = "okay";
+};
+
+&spi2 {
+	status = "okay";
+	cs-gpios = <&gpiod 2 GPIO_ACTIVE_HIGH>;
+
+	sdhc0: sdhc@0 {
+		compatible = "zephyr,mmc-spi-slot";
+		reg = <0>;
+		status = "okay";
+		label = "SDHC0";
+		spi-max-frequency = <24000000>;
+	};
+};
+
+&usb {
+	status = "okay";
+	disconnect-gpios = <&gpioc 12 GPIO_ACTIVE_LOW>;
+};
+
+&timers1 {
+	status = "okay";
+
+	pwm1: pwm {
+		status = "okay";
+	};
+};
+
+&iwdg {
+	status = "okay";
+};
+
+&can1 {
+	bus-speed = <125000>;
+	sjw = <1>;
+	prop-seg = <0>;
+	phase-seg1 = <5>;
+	phase-seg2 = <6>;
+	status = "okay";
+};

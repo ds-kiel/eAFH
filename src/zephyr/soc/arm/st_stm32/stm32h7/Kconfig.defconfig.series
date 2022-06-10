@@ -1,0 +1,26 @@
+# ST Microelectronics STM32H7 MCU line
+
+# Copyright (c) 2019 Linaro  Limited
+# SPDX-License-Identifier: Apache-2.0
+
+# Kconfig symbols common to STM32H7 series
+
+if SOC_SERIES_STM32H7X
+
+source "soc/arm/st_stm32/stm32h7/Kconfig.defconfig.stm32h7*"
+
+config SOC_SERIES
+	default "stm32h7"
+
+config DMA_STM32_V1
+	default y
+	depends on DMA_STM32
+
+if ENTROPY_GENERATOR
+
+config ENTROPY_STM32_RNG
+	default y
+
+endif # ENTROPY_GENERATOR
+
+endif # SOC_SERIES_STM32H7X

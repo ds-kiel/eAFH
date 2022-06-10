@@ -1,0 +1,165 @@
+/*
+ * Copyright (c) 2018 - 2019 Antmicro <www.antmicro.com>
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	compatible = "litex,vexriscv", "litex-dev";
+	model = "litex,vexriscv";
+
+
+	chosen {
+		zephyr,entropy = &prbs0;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		cpu@0 {
+			clock-frequency = <100000000>;
+			compatible = "spinalhdl,vexriscv", "riscv";
+			device_type = "cpu";
+			reg = <0>;
+			riscv,isa = "rv32imac";
+			status = "okay";
+			timebase-frequency = <32768>;
+		};
+	};
+	soc {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "litex,vexriscv";
+		ranges;
+		intc0: interrupt-controller@bc0 {
+			#interrupt-cells = <2>;
+			compatible = "vexriscv,intc0";
+			interrupt-controller;
+			reg = <0xbc0 0x4 0xfc0 0x4>;
+			reg-names = "irq_mask", "irq_pending";
+			riscv,max-priority = <7>;
+		};
+		uart0: serial@e0001800 {
+			compatible = "litex,uart0";
+			interrupt-parent = <&intc0>;
+			interrupts = <2 10>;
+			reg = <0xe0001800 0x18>;
+			reg-names = "control";
+			label = "uart0";
+			status = "disabled";
+		};
+		spi0: spi@e0002000 {
+			compatible = "litex,spi";
+			interrupt-parent = <&intc0>;
+			interrupts = <5 0>;
+			reg = <0xe0002000 0x34>;
+			reg-names = "control";
+			label = "spi0";
+			status = "disabled";
+			#address-cells = <1>;
+			#size-cells = <0>;
+		};
+		timer0: timer@e0002800 {
+			compatible = "litex,timer0";
+			interrupt-parent = <&intc0>;
+			interrupts = <1 0>;
+			reg = <0xe0002800 0x40>;
+			reg-names = "control";
+			label = "timer0";
+			status = "disabled";
+		};
+		eth0: ethernet@e0009800 {
+			compatible = "litex,eth0";
+			interrupt-parent = <&intc0>;
+			interrupts = <3 0>;
+			reg = <0xe0009800 0x6b 0xb0000000 0x2000>;
+			local-mac-address = [10 e2 d5 00 00 02];
+			reg-names = "control", "buffers";
+			label = "eth0";
+			status = "disabled";
+		};
+		dna0: dna@e0003800 {
+			compatible = "litex,dna0";
+			/* DNA data is 57-bits long,
+			so it requires 8 bytes.
+			In LiteX each 32-bit register holds
+			only a single byte of meaningful data,
+			hence 8 registers. */
+			reg = <0xe0003800 0x20>;
+			reg-names = "mem";
+			label = "dna0";
+			status = "disabled";
+		};
+		i2c0: i2c@e0005000 {
+			compatible = "litex,i2c";
+			reg = <0xe0005000 0x4 0xe0005004 0x4>;
+			reg-names = "write", "read";
+			label = "i2c0";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "disabled";
+		};
+		gpio_out: gpio@e0005800 {
+			compatible = "litex,gpio";
+			reg = <0xe0005800 0x4>;
+			reg-names = "control";
+			ngpios = <4>;
+			label = "gpio_out";
+			port-is-output;
+			status = "disabled";
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+		gpio_in: gpio@e0006000 {
+			compatible = "litex,gpio";
+			reg = <0xe0006000 0x4>;
+			reg-names = "control";
+			ngpios = <4>;
+			label = "gpio_in";
+			status = "disabled";
+			gpio-controller;
+			#gpio-cells = <2>;
+		};
+		prbs0: prbs@e0006800 {
+			compatible = "litex,prbs";
+			reg = <0xe0006800 0x4>;
+			reg-names = "status";
+			label = "prbs0";
+			status = "disabled";
+		};
+		pwm0: pwm@e0007000 {
+			compatible = "litex,pwm";
+			reg = <0xe0007000 0x4 0xe0007004 0x10 0xe0007014 0x10>;
+			reg-names = "enable", "width", "period";
+			label = "pwm0";
+			status = "disabled";
+			#pwm-cells = <2>;
+		};
+		i2s_rx: i2s_rx@e000a800 {
+			compatible = "litex,i2s";
+			reg = <0xe000a800 0x20 0xb1000000 0x40000>;
+			interrupt-parent = <&intc0>;
+			interrupts = <6 2>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg-names = "control", "fifo";
+			fifo_depth = <256>;
+			label = "i2s_rx";
+			status = "disabled";
+		};
+		i2s_tx: i2s_tx@e000b000 {
+			compatible = "litex,i2s";
+			reg = <0xe000b000 0x20 0xb2000000 0x40000>;
+			interrupt-parent = <&intc0>;
+			interrupts = <7 2>;
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg-names = "control", "fifo";
+			fifo_depth = <256>;
+			label = "i2s_tx";
+			status = "disabled";
+		};
+	};
+};

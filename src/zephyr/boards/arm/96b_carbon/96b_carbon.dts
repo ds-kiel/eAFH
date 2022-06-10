@@ -1,0 +1,141 @@
+/*
+ * Copyright (c) 2017 Linaro Limited
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/f4/stm32f401Xe.dtsi>
+#include "96b_lscon.dtsi"
+
+/ {
+	model = "Seeed Studio Carbon 96boards";
+	compatible = "seeed,carbon", "st,stm32f401";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+		zephyr,code-partition = &slot0_partition;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+		green_led_1: led_1 {
+			gpios = <&gpiod 2 GPIO_ACTIVE_HIGH>;
+			label = "USR1 LED";
+		};
+		green_led_2: led_2 {
+			gpios = <&gpioa 15 GPIO_ACTIVE_HIGH>;
+			label = "USR2 LED";
+		};
+		bt_blue_led: led_3 {
+			gpios = <&gpioa 15 GPIO_ACTIVE_HIGH>;
+			label = "BT LED";
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		user_button: button {
+			label = "User";
+			gpios = <&gpiob 2 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	aliases {
+		led0 = &green_led_1;
+		led1 = &green_led_2;
+		led2 = &bt_blue_led;
+		sw0 = &user_button;
+	};
+};
+
+&usart1 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&usart2 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&usart6 {
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&i2c1 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&i2c2 {
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&spi1 {
+	status = "okay";
+
+	/* Nordic nRF51822-QFAC */
+	bt-hci@0 {
+		compatible = "zephyr,bt-hci-spi";
+		reg = <0>;
+		reset-gpios = <&gpiob 4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+		irq-gpios = <&gpiob 1 GPIO_ACTIVE_HIGH>;
+		spi-max-frequency = <2000000>;
+		label = "BT_HCI";
+	};
+};
+
+&spi2 {
+	status = "okay";
+};
+
+&usbotg_fs {
+	status = "okay";
+};
+
+&flash0 {
+	/*
+	 * For more information, see:
+	 * https://docs.zephyrproject.org/latest/guides/dts/legacy-macros.html#legacy-flash-partitions
+	 */
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 0x00008000>;
+			read-only;
+		};
+
+		/*
+		 * The flash starting at offset 0x00008000 and ending at
+		 * offset 0x0001ffff (sectors 2 through 4) is reserved for
+		 * use by the application.
+		 */
+
+		slot0_partition: partition@20000 {
+			label = "image-0";
+			reg = <0x00020000 0x00020000>;
+		};
+		slot1_partition: partition@40000 {
+			label = "image-1";
+			reg = <0x00040000 0x00020000>;
+		};
+		scratch_partition: partition@60000 {
+			label = "image-scratch";
+			reg = <0x00060000 0x00020000>;
+		};
+	};
+};
+
+&rtc {
+	status = "okay";
+};

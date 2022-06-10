@@ -1,0 +1,6 @@
+tests:
+  crypto.tinycrypt:
+    tags: tinycrypt crypto aes ccm
+    timeout: 300
+    integration_platforms:
+      - native_posix

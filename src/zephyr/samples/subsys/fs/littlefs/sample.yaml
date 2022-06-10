@@ -1,0 +1,7 @@
+sample:
+  name: littlefs filesystem sample
+tests:
+  sample.filesystem.littlefs:
+    build_only: true
+    platform_allow: nrf52840dk_nrf52840 particle_xenon
+    tags: filesystem

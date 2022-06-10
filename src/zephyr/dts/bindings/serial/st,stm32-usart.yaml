@@ -1,0 +1,18 @@
+description: STM32 USART
+
+compatible: "st,stm32-usart"
+
+include: uart-controller.yaml
+
+properties:
+    reg:
+      required: true
+
+    interrupts:
+      required: true
+
+    parity:
+      required: false
+      type: int
+      description: Configures the parity of the adapter. Value 0 for none, 1 for odd and 2 for even parity.
+      default: 0

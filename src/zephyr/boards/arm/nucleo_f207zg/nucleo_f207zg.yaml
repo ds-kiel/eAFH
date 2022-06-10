@@ -1,0 +1,18 @@
+identifier: nucleo_f207zg
+name: ST Nucleo F207ZG
+type: mcu
+arch: arm
+ram: 128
+flash: 1024
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+supported:
+  - arduino_gpio
+  - gpio
+  - usb_device
+  - watchdog
+  - counter
+  - adc
+  - dac

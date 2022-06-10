@@ -1,0 +1,61 @@
+# FRDM-K64F board
+
+# Copyright (c) 2016, Freescale Semiconductor, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+if BOARD_FRDM_K64F
+
+config BOARD
+	default "frdm_k64f"
+
+config OSC_XTAL0_FREQ
+	default 50000000
+
+config MCG_PRDIV0
+	default 0x13
+
+config MCG_VDIV0
+	default 0x18
+
+config MCG_FCRDIV
+	default 1
+
+if PINMUX_MCUX
+
+config PINMUX_MCUX_PORTA
+	default y
+
+config PINMUX_MCUX_PORTB
+	default y
+
+config PINMUX_MCUX_PORTC
+	default y
+
+config PINMUX_MCUX_PORTD
+	default y if "$(dt_nodelabel_enabled,spi0)" && SPI
+	default y if "$(dt_nodelabel_enabled,uart2)" && SERIAL
+
+config PINMUX_MCUX_PORTE
+	default y
+
+endif # PINMUX_MCUX
+
+config TEMP_KINETIS
+	default y if "$(dt_nodelabel_enabled,adc1)"
+	depends on SENSOR && ADC
+
+config SPI_0
+	default y
+	depends on SPI
+
+if NETWORKING
+
+config NET_L2_ETHERNET
+	default y if !MODEM
+
+config ETH_MCUX_0
+	default y if NET_L2_ETHERNET
+
+endif # NETWORKING
+
+endif # BOARD_FRDM_K64F

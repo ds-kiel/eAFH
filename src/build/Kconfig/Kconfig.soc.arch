@@ -1,0 +1,2 @@
+osource "/Users/valentin/research/official_repos/eAFH/src/zephyr/soc/$(ARCH)/Kconfig"
+osource "/Users/valentin/research/official_repos/eAFH/src/zephyr/soc/$(ARCH)/*/Kconfig"

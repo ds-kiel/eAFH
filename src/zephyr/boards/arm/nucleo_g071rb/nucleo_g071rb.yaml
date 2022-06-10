@@ -1,0 +1,16 @@
+identifier: nucleo_g071rb
+name: ST Nucleo G071RB
+type: mcu
+arch: arm
+toolchain:
+  - zephyr
+  - gnuarmemb
+  - xtools
+ram: 36
+flash: 128
+supported:
+  - arduino_gpio
+  - uart
+  - gpio
+  - watchdog
+  - pwm

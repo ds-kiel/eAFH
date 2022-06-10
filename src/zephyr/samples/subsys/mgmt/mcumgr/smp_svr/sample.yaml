@@ -1,0 +1,16 @@
+sample:
+  description: Simple Management Protocol sample
+  name: smp svr
+common:
+    harness: bluetooth
+    tags: bluetooth
+tests:
+  sample.mcumg.smp_svr.bt_tiny:
+    extra_args: OVERLAY_CONFIG="overlay-bt-tiny.conf"
+    platform_allow: nrf51dk_nrf51422
+  sample.mcumg.smp_svr.bt:
+    extra_args: OVERLAY_CONFIG="overlay-bt.conf"
+    platform_allow: nrf52dk_nrf52832 nrf52840dk_nrf52840
+  sample.mcumg.smp_svr.udp:
+    extra_args: OVERLAY_CONFIG="overlay-udp.conf"
+    platform_allow: frdm_k64f

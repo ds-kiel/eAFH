@@ -1,0 +1,13 @@
+description: STM32 PINMUX
+
+compatible: "st,stm32-pinmux"
+
+include: base.yaml
+
+properties:
+    reg:
+      required: true
+
+pinmux-cells:
+  - pin
+  - function

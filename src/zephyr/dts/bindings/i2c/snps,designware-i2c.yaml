@@ -1,0 +1,20 @@
+# Copyright (c) 2018 Intel Corporation
+# SPDX-License-Identifier: Apache-2.0
+
+description: Synopsys DesignWare I2C node
+
+compatible: "snps,designware-i2c"
+
+include: i2c-controller.yaml
+
+properties:
+    reg:
+      required: true
+
+    interrupts:
+      required: true
+
+    pcie:
+      type: boolean
+      required: false
+      description: attached via PCI(e) bus
